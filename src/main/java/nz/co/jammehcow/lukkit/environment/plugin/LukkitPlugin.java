@@ -452,7 +452,11 @@ public class LukkitPlugin implements Plugin {
 
                 switch (args.type()) {
                     case LuaValue.TNIL:
-                        return newInstanceMethod.invoke(classPathValue).checkvalue(1);
+                        try {
+                            return CoerceJavaToLua.coerce(Class.forName(classPath).getConstructor().newInstance());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e.getMessage());
+                        }
                     case LuaValue.TTABLE:
                         LuaTable argTable = args.checktable();
                         LuaValue[] varargArray = new LuaValue[argTable.length() + 1];
